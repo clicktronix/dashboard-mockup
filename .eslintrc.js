@@ -48,13 +48,6 @@ module.exports = {
         overrides: { arrow: { before: true, after: true } },
       },
     ],
-    'import/order': [
-      'error',
-      {
-        groups: [['builtin', 'external'], 'internal', ['parent', 'sibling'], 'index'],
-        'newlines-between': 'always',
-      },
-    ],
     '@typescript-eslint/no-unused-expressions': [
       'error',
       { allowShortCircuit: true, allowTernary: true },
@@ -63,15 +56,6 @@ module.exports = {
     'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
     'max-len': ['error', { code: 90, ignoreComments: true }],
     indent: ['error', 2, { ObjectExpression: 1 }],
-    'object-curly-newline': [
-      'error',
-      {
-        ObjectExpression: { consistent: true, multiline: true },
-        ObjectPattern: { consistent: true, multiline: true },
-        ImportDeclaration: 'never',
-        ExportDeclaration: { multiline: true, minProperties: 3 },
-      },
-    ],
     'arrow-parens': 'off',
     'no-underscore-dangle': 'off',
     'react-hooks/rules-of-hooks': 'error',
