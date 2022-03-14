@@ -1,11 +1,10 @@
 import {
+  Checkbox,
   FormControl,
   FormControlLabel,
   FormLabel,
   Grid,
   Paper,
-  Radio,
-  RadioGroup,
   Typography,
 } from '@mui/material';
 import MuiTable from '@mui/material/Table';
@@ -26,23 +25,8 @@ export function MetricsTable() {
             <FormLabel id="alert-type" sx={{ mr: 2 }}>
               Alert type:
             </FormLabel>
-            <RadioGroup
-              aria-labelledby="alert-type"
-              defaultValue="female"
-              name="alert-type"
-              sx={{ flexDirection: 'row' }}
-            >
-              <FormControlLabel
-                value="profitability"
-                control={<Radio />}
-                label="Profitability"
-              />
-              <FormControlLabel
-                value="close-volume"
-                control={<Radio />}
-                label="Close volume"
-              />
-            </RadioGroup>
+            <FormControlLabel control={<Checkbox />} label="Profitability" />
+            <FormControlLabel control={<Checkbox />} label="Close volume" />
           </FormControl>
         </Paper>
       </Grid>

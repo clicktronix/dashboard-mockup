@@ -63,11 +63,17 @@ export function Drawer({ toggle, ...rest }: DrawerProps) {
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton component={Link} to="/mockup">
           <ListItemIcon>
             <BarChartIcon />
           </ListItemIcon>
-          <ListItemText primary="Reports" />
+          <ListItemText primary="Mockup" />
+        </ListItemButton>
+        <ListItemButton component={Link} to="/mockup2">
+          <ListItemIcon>
+            <BarChartIcon />
+          </ListItemIcon>
+          <ListItemText primary="Mockup" />
         </ListItemButton>
       </List>
     </CustomizedDrawer>
