@@ -1,6 +1,15 @@
-import { Chip, ChipProps as MuiChipProps } from '@mui/material';
-import Box from '@mui/material/Box';
+import {
+  Autocomplete,
+  Box,
+  Chip,
+  ChipProps,
+  Divider,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getColor } from 'utils/getColor';
 
@@ -14,14 +23,13 @@ const instrumentsMock = [
   { name: 'USDCAD', count: 2 },
 ];
 
-type ChipProps = {
+type CustomizedChipProps = {
   chipColor: ReturnType<typeof getColor>;
-} & MuiChipProps;
+} & ChipProps;
 
 const CustomizedChip = styled(Chip, {
   shouldForwardProp: (prop) => prop !== 'chipColor',
-})<ChipProps>(({ theme, chipColor }) => ({
-  margin: theme.spacing(1),
+})<CustomizedChipProps>(({ chipColor }) => ({
   backgroundColor: chipColor,
 }));
 
@@ -30,19 +38,46 @@ export function InstrumentsHeatmap() {
   const onClickHandler = (instrument: string) => () => {
     navigate(`/instruments/${instrument}`);
   };
+  const [selectedInstruments, setSelectedInstruments] = useState(instrumentsMock);
+
+  const onChange = (_: React.SyntheticEvent, value: typeof instrumentsMock) => {
+    setSelectedInstruments(value.length === 0 ? instrumentsMock : value);
+  };
 
   return (
     <Box>
-      {instrumentsMock
-        .sort((a, b) => b.count - a.count)
-        .map((instrument) => (
-          <CustomizedChip
-            label={`${instrument.name} (${instrument.count})`}
-            key={instrument.name}
-            onClick={onClickHandler(instrument.name)}
-            chipColor={getColor(instrument.count)}
-          />
-        ))}
+      <Stack spacing={5} direction="row" alignItems="center">
+        <Autocomplete
+          multiple
+          id="instruments"
+          sx={{ width: 500 }}
+          options={instrumentsMock}
+          onChange={onChange}
+          getOptionLabel={(option) => option.name}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField {...params} label="Select instruments" placeholder="Instruments" />
+          )}
+        />
+        <Typography>{`Count of instruments: ${instrumentsMock.length + 1}`}</Typography>
+        <Typography>{`Count of alerts: ${instrumentsMock.reduce((count, item) => {
+          return item.count + count;
+        }, 0)}`}</Typography>
+      </Stack>
+      <Divider sx={{ my: 3 }} />
+      <Stack spacing={3} direction="row">
+        {selectedInstruments
+          .sort((a, b) => b.count - a.count)
+          .map((instrument) => (
+            <CustomizedChip
+              label={`${instrument.name} (${instrument.count})`}
+              key={instrument.name}
+              onClick={onClickHandler(instrument.name)}
+              chipColor={getColor(instrument.count)}
+            />
+          ))}
+        <Chip label="More instruments..." onClick={() => {}} />
+      </Stack>
     </Box>
   );
 }
