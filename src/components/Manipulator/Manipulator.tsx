@@ -8,6 +8,10 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useState } from 'react';
 
 const timeIntervals = [
@@ -25,6 +29,11 @@ const timeIntervals = [
 
 export function Manipulator() {
   const [value, setValue] = useState<Date | null>(new Date('2014-08-18T21:11:54'));
+  const [average, setAverage] = useState(1);
+
+  const handleSelect = (event: SelectChangeEvent<number>) => {
+    setAverage(event.target.value as any);
+  };
 
   const handleChange = (newValue: Date | null) => {
     setValue(newValue);
@@ -47,6 +56,22 @@ export function Manipulator() {
           onChange={handleChange}
           renderInput={(params) => <TextField {...params} />}
         />
+        <FormControl>
+          <InputLabel id="average-label">Average</InputLabel>
+          <Select
+            labelId="average-label"
+            id="average"
+            value={average}
+            label="Average"
+            sx={{ width: 100, color: 'black' }}
+            displayEmpty
+            onChange={handleSelect}
+          >
+            <MenuItem value={1}>1</MenuItem>
+            <MenuItem value={10}>10</MenuItem>
+            <MenuItem value={20}>20</MenuItem>
+          </Select>
+        </FormControl>
       </Stack>
       <Divider sx={{ my: 3 }} />
       <Stack spacing={3} direction="row">
