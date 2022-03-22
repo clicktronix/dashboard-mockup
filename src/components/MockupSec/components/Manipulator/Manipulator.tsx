@@ -30,6 +30,12 @@ export function Manipulator() {
             renderInput={(params) => <TextField {...params} />}
           />
         </Stack>
+        <TextField
+          sx={{ marginLeft: 2 }}
+          id="average"
+          label="Average"
+          variant="outlined"
+        />
       </Stack>
       <Slider />
     </FormGroup>

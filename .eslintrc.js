@@ -34,7 +34,7 @@ module.exports = {
         ],
       },
     ],
-    'sort-imports': ['error', { ignoreDeclarationSort: true }],
+    'sort-imports': ['error', { ignoreDeclarationSort: true, ignoreCase: true }],
     'simple-import-sort/exports': 'error',
     'simple-import-sort/imports': 'error',
     'import/prefer-default-export': 'off',
