@@ -1,7 +1,7 @@
 {
   "name": "anti-prophet",
   "version": "0.1.0",
-  "homepage": ".",
+  "homepage": "https://clicktronix.github.io/dashboard-mockup/",
   "private": true,
   "dependencies": {
     "@date-io/dayjs": "^2.13.1",
