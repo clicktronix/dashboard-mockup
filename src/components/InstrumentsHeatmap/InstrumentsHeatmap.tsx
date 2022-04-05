@@ -3,46 +3,59 @@ import {
   Box,
   Chip,
   ChipProps,
+  CircularProgress,
   Divider,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useState } from 'react';
+import { CloseVolumeAlert } from 'components/Dashboard/redux';
+import * as R from 'ramda';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getColor } from 'utils/getColor';
 
-const instrumentsMock = [
-  { name: 'EURUSD', count: 1 },
-  { name: 'USDBTC', count: 2 },
-  { name: 'USDJPY', count: 1 },
-  { name: 'GBPUSD', count: 6 },
-  { name: 'AUDUSD', count: 1 },
-  { name: 'USDCHF', count: 3 },
-  { name: 'USDCAD', count: 2 },
-];
+type InstrumentsHeatmapProps = {
+  isLoading: boolean;
+  alerts: CloseVolumeAlert[];
+};
 
 type CustomizedChipProps = {
   chipColor: ReturnType<typeof getColor>;
 } & ChipProps;
 
 const CustomizedChip = styled(Chip, {
-  shouldForwardProp: (prop) => prop !== 'chipColor',
+  shouldForwardProp: (props) => props !== 'chipColor',
 })<CustomizedChipProps>(({ chipColor }) => ({
   backgroundColor: chipColor,
 }));
 
-export function InstrumentsHeatmap() {
+export function InstrumentsHeatmap({ isLoading, alerts }: InstrumentsHeatmapProps) {
+  const alertsMap = useMemo(() => R.groupBy(R.prop('symbol'), alerts), [alerts]);
+  const instruments = Object.keys(alertsMap);
   const navigate = useNavigate();
-  const onClickHandler = (instrument: string) => () => {
-    navigate(`/instruments/${instrument}`);
-  };
-  const [selectedInstruments, setSelectedInstruments] = useState(instrumentsMock);
 
-  const onChange = (_: React.SyntheticEvent, value: typeof instrumentsMock) => {
-    setSelectedInstruments(value.length === 0 ? instrumentsMock : value);
+  const [selectedInstruments, setSelectedInstruments] = useState(instruments);
+
+  const onClickHandler = useCallback(
+    (instrument: string) => () => {
+      navigate(`/instruments/${instrument}`);
+    },
+    [navigate],
+  );
+
+  const onChange = (_: React.SyntheticEvent, value: string[]) => {
+    setSelectedInstruments(value.length === 0 ? instruments : value);
   };
+
+  if (isLoading) {
+    return (
+      <Box>
+        <CircularProgress sx={{ display: 'flex', margin: '20px auto' }} />
+      </Box>
+    );
+  }
 
   return (
     <Box>
@@ -51,31 +64,29 @@ export function InstrumentsHeatmap() {
           multiple
           id="instruments"
           sx={{ width: 500 }}
-          options={instrumentsMock}
+          options={instruments}
           onChange={onChange}
-          getOptionLabel={(option) => option.name}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField {...params} label="Select instruments" placeholder="Instruments" />
           )}
         />
-        <Typography>{`Count of instruments: ${instrumentsMock.length + 1}`}</Typography>
-        <Typography>{`Count of alerts: ${instrumentsMock.reduce((count, item) => {
-          return item.count + count;
-        }, 0)}`}</Typography>
+        <Typography>{`Count of alerts: ${alerts.length}`}</Typography>
+        <Typography>{`Count of instruments: ${Object.values(alertsMap).reduce(
+          (r, instrumentCount) => instrumentCount.length + r,
+          0,
+        )}`}</Typography>
       </Stack>
       <Divider sx={{ my: 3 }} />
       <Stack spacing={3} direction="row">
-        {selectedInstruments
-          .sort((a, b) => b.count - a.count)
-          .map((instrument) => (
-            <CustomizedChip
-              label={`${instrument.name} (${instrument.count})`}
-              key={instrument.name}
-              onClick={onClickHandler(instrument.name)}
-              chipColor={getColor(instrument.count)}
-            />
-          ))}
+        {selectedInstruments.map((i) => (
+          <CustomizedChip
+            label={`${i} (${alertsMap[i].length})`}
+            key={i}
+            onClick={onClickHandler(i)}
+            chipColor={getColor(alertsMap[i].length)}
+          />
+        ))}
         <Chip label="More instruments..." onClick={() => {}} />
       </Stack>
     </Box>

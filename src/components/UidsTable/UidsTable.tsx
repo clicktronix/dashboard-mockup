@@ -1,21 +1,18 @@
+import { CircularProgress } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import MuiTable from '@mui/material/Table';
 import MuiTableBody from '@mui/material/TableBody';
 import MuiTableCell from '@mui/material/TableCell';
 import MuiTableHead from '@mui/material/TableHead';
 import MuiTableRow, { TableRowProps as MuiTableRowProps } from '@mui/material/TableRow';
+import { ProfitabilityAlert } from 'components/Dashboard/redux';
 import { Link } from 'react-router-dom';
 import { getColor } from 'utils/getColor';
 
-function createData(uuid: string, date: string, count: number) {
-  return { uuid, date, count };
-}
-
-const rows = [
-  createData('9351f696-962c-11ec-b909-0242ac120002', '16 Mar, 2022', 1),
-  createData('9351fbdc-962c-11ec-b909-0242ac120002', '16 Mar, 2022', 3),
-  createData('9351fe52-962c-11ec-b909-0242ac120002', '16 Mar, 2022', 6),
-];
+type UidsTableProps = {
+  isLoading: boolean;
+  alerts?: ProfitabilityAlert[];
+};
 
 type TableRowProps = {
   rowColor: ReturnType<typeof getColor>;
@@ -28,28 +25,31 @@ const CustomizedRow = styled(MuiTableRow, {
   backgroundColor: rowColor,
 }));
 
-export function UidsTable() {
+export function UidsTable({ alerts = [], isLoading }: UidsTableProps) {
   return (
     <MuiTable size="small">
       <MuiTableHead>
         <MuiTableRow>
           <MuiTableCell>UUID</MuiTableCell>
-          <MuiTableCell>Date</MuiTableCell>
-          <MuiTableCell>Count</MuiTableCell>
+          <MuiTableCell>Trades Count</MuiTableCell>
         </MuiTableRow>
       </MuiTableHead>
       <MuiTableBody>
-        {rows
-          .sort((a, b) => b.count - a.count)
-          .map((row) => (
-            <CustomizedRow key={row.uuid} rowColor={getColor(row.count)}>
-              <MuiTableCell>
-                <Link to={`/uuids/${row.uuid}`}>{row.uuid}</Link>
-              </MuiTableCell>
-              <MuiTableCell>{row.date}</MuiTableCell>
-              <MuiTableCell>{row.count}</MuiTableCell>
-            </CustomizedRow>
-          ))}
+        {isLoading ? (
+          <CircularProgress sx={{ display: 'flex', margin: '20px auto' }} />
+        ) : (
+          alerts
+            .slice()
+            .sort((a, b) => b.tradesCount - a.tradesCount)
+            .map((alert) => (
+              <CustomizedRow key={alert.userUUID} rowColor={getColor(alert.tradesCount)}>
+                <MuiTableCell>
+                  <Link to={`/uuids/${alert.userUUID}`}>{alert.userUUID}</Link>
+                </MuiTableCell>
+                <MuiTableCell>{alert.tradesCount}</MuiTableCell>
+              </CustomizedRow>
+            ))
+        )}
       </MuiTableBody>
     </MuiTable>
   );

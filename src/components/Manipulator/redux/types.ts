@@ -1,10 +1,13 @@
 export type Manipulator = {
   sensors: Record<Sensors, boolean>;
-  datePeriod: {
-    from?: string;
-    to?: string;
-  };
+  datePeriod: DatePeriod;
+  average: number;
   timeInterval?: string;
+};
+
+export type DatePeriod = {
+  from?: string;
+  to?: string;
 };
 
 export type Sensors = 'profitability' | 'closeVolume';

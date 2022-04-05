@@ -13,6 +13,9 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { averageSelect, Sensors, sensorSelect, setAverage, setSensor } from './redux';
 
 const timeIntervals = [
   '3 min',
@@ -29,21 +32,45 @@ const timeIntervals = [
 
 export function Manipulator() {
   const [value, setValue] = useState<Date | null>(new Date('2014-08-18T21:11:54'));
-  const [average, setAverage] = useState(1);
+  const dispatch = useDispatch();
+  const sensors = useSelector(sensorSelect);
+  const average = useSelector(averageSelect);
 
   const handleSelect = (event: SelectChangeEvent<number>) => {
-    setAverage(event.target.value as any);
+    dispatch(setAverage(event.target.value as number));
   };
 
   const handleChange = (newValue: Date | null) => {
     setValue(newValue);
   };
 
+  const onSensorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setSensor(e.target.name as Sensors));
+  };
+
   return (
     <FormGroup>
       <Stack spacing={4} direction="row">
-        <FormControlLabel control={<Checkbox />} label="Profitability" />
-        <FormControlLabel control={<Checkbox />} label="Close volume" />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={sensors.profitability}
+              name="profitability"
+              onChange={onSensorChange}
+            />
+          }
+          label="Profitability"
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={sensors.closeVolume}
+              name="closeVolume"
+              onChange={onSensorChange}
+            />
+          }
+          label="Close volume"
+        />
         <DateTimePicker
           label="From Date/Time picker"
           value={value}
@@ -68,7 +95,9 @@ export function Manipulator() {
             onChange={handleSelect}
           >
             <MenuItem value={1}>1</MenuItem>
+            <MenuItem value={5}>5</MenuItem>
             <MenuItem value={10}>10</MenuItem>
+            <MenuItem value={15}>15</MenuItem>
             <MenuItem value={20}>20</MenuItem>
           </Select>
         </FormControl>
