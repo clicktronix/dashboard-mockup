@@ -1,4 +1,4 @@
-import BarChartIcon from '@mui/icons-material/BarChart';
+// import BarChartIcon from '@mui/icons-material/BarChart';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { Toolbar } from '@mui/material';
@@ -63,7 +63,7 @@ export function Drawer({ toggle, ...rest }: DrawerProps) {
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItemButton>
-        <ListItemButton component={Link} to="/mockup">
+        {/* <ListItemButton component={Link} to="/mockup">
           <ListItemIcon>
             <BarChartIcon />
           </ListItemIcon>
@@ -74,7 +74,7 @@ export function Drawer({ toggle, ...rest }: DrawerProps) {
             <BarChartIcon />
           </ListItemIcon>
           <ListItemText primary="Mockup" />
-        </ListItemButton>
+        </ListItemButton> */}
       </List>
     </CustomizedDrawer>
   );

@@ -4,6 +4,8 @@ import MuiTableBody from '@mui/material/TableBody';
 import MuiTableCell from '@mui/material/TableCell';
 import MuiTableHead from '@mui/material/TableHead';
 import MuiTableRow, { TableRowProps as MuiTableRowProps } from '@mui/material/TableRow';
+import { averageSelect } from 'components/Manipulator/redux';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getColor } from 'utils/getColor';
 
@@ -29,6 +31,8 @@ const CustomizedRow = styled(MuiTableRow, {
 }));
 
 export function UidsTable() {
+  const average = useSelector(averageSelect);
+
   return (
     <MuiTable size="small">
       <MuiTableHead>
@@ -42,7 +46,7 @@ export function UidsTable() {
         {rows
           .sort((a, b) => b.count - a.count)
           .map((row) => (
-            <CustomizedRow key={row.uuid} rowColor={getColor(row.count)}>
+            <CustomizedRow key={row.uuid} rowColor={getColor(row.count, average)}>
               <MuiTableCell>
                 <Link to={`/uuids/${row.uuid}`}>{row.uuid}</Link>
               </MuiTableCell>

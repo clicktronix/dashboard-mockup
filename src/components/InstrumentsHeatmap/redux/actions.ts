@@ -1,3 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
 
-export const setInstrument = createAction<string, 'SET_INSTRUMENT'>('SET_INSTRUMENT');
+const SET_INSTRUMENT = 'SET_INSTRUMENT';
+
+export const setInstrument = createAction<string, typeof SET_INSTRUMENT>(SET_INSTRUMENT);
