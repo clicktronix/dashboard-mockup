@@ -11,8 +11,10 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { CloseVolumeAlert } from 'components/Dashboard/redux';
+import { averageSelect } from 'components/Manipulator/redux';
 import * as R from 'ramda';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getColor } from 'utils/getColor';
 
@@ -33,10 +35,15 @@ const CustomizedChip = styled(Chip, {
 
 export function InstrumentsHeatmap({ isLoading, alerts }: InstrumentsHeatmapProps) {
   const alertsMap = useMemo(() => R.groupBy(R.prop('symbol'), alerts), [alerts]);
-  const instruments = Object.keys(alertsMap);
+  const instruments = useMemo(() => Object.keys(alertsMap), [alertsMap]);
   const navigate = useNavigate();
 
-  const [selectedInstruments, setSelectedInstruments] = useState(instruments);
+  const [selectedInstruments, setSelectedInstruments] = useState<string[]>([]);
+  const average = useSelector(averageSelect);
+
+  useEffect(() => {
+    setSelectedInstruments(instruments);
+  }, [instruments]);
 
   const onClickHandler = useCallback(
     (instrument: string) => () => {
@@ -72,21 +79,21 @@ export function InstrumentsHeatmap({ isLoading, alerts }: InstrumentsHeatmapProp
           )}
         />
         <Typography>{`Count of alerts: ${alerts.length}`}</Typography>
-        <Typography>{`Count of instruments: ${Object.values(alertsMap).reduce(
-          (r, instrumentCount) => instrumentCount.length + r,
-          0,
-        )}`}</Typography>
+        <Typography>{`Count of instruments: ${
+          Object.keys(alertsMap).length
+        }`}</Typography>
       </Stack>
       <Divider sx={{ my: 3 }} />
       <Stack spacing={3} direction="row">
-        {selectedInstruments.map((i) => (
-          <CustomizedChip
-            label={`${i} (${alertsMap[i].length})`}
-            key={i}
-            onClick={onClickHandler(i)}
-            chipColor={getColor(alertsMap[i].length)}
-          />
-        ))}
+        {Boolean(instruments.length) &&
+          selectedInstruments.map((i) => (
+            <CustomizedChip
+              label={`${i} (${alertsMap[i].length})`}
+              key={i}
+              onClick={onClickHandler(i)}
+              chipColor={getColor(alertsMap[i].length, average)}
+            />
+          ))}
         <Chip label="More instruments..." onClick={() => {}} />
       </Stack>
     </Box>

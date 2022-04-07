@@ -1,4 +1,4 @@
-import { CircularProgress } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import MuiTable from '@mui/material/Table';
 import MuiTableBody from '@mui/material/TableBody';
 import MuiTableCell from '@mui/material/TableCell';
@@ -17,6 +17,14 @@ export function SensorTable({
   profitabilityAlerts,
   closeVolumeAlerts,
 }: SensorTableProps) {
+  if (isLoading) {
+    return (
+      <Box>
+        <CircularProgress sx={{ display: 'flex', margin: '20px auto' }} />
+      </Box>
+    );
+  }
+
   return (
     <MuiTable size="small">
       <MuiTableHead>
@@ -26,20 +34,16 @@ export function SensorTable({
         </MuiTableRow>
       </MuiTableHead>
       <MuiTableBody>
-        {isLoading ? (
-          <CircularProgress sx={{ display: 'flex', margin: '20px auto' }} />
-        ) : (
-          <>
-            <MuiTableRow>
-              <MuiTableCell>Profitability alerts</MuiTableCell>
-              <MuiTableCell>{profitabilityAlerts?.length}</MuiTableCell>
-            </MuiTableRow>
-            <MuiTableRow>
-              <MuiTableCell>Close Volume alerts</MuiTableCell>
-              <MuiTableCell>{closeVolumeAlerts?.length}</MuiTableCell>
-            </MuiTableRow>
-          </>
-        )}
+        <>
+          <MuiTableRow>
+            <MuiTableCell>Profitability alerts</MuiTableCell>
+            <MuiTableCell>{profitabilityAlerts?.length}</MuiTableCell>
+          </MuiTableRow>
+          <MuiTableRow>
+            <MuiTableCell>Close Volume alerts</MuiTableCell>
+            <MuiTableCell>{closeVolumeAlerts?.length}</MuiTableCell>
+          </MuiTableRow>
+        </>
       </MuiTableBody>
     </MuiTable>
   );

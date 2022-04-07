@@ -6,8 +6,8 @@ export type Manipulator = {
 };
 
 export type DatePeriod = {
-  from?: string;
-  to?: string;
+  from: string | null;
+  to: string | null;
 };
 
 export type Sensors = 'profitability' | 'closeVolume';

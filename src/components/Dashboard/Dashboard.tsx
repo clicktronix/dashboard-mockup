@@ -1,9 +1,11 @@
+/* eslint-disable prettier/prettier */
 import { Grid, Paper } from '@mui/material';
 import { InstrumentsHeatmap } from 'components/InstrumentsHeatmap';
 import { Manipulator } from 'components/Manipulator';
-import { sensorSelect } from 'components/Manipulator/redux';
+import { datePeriodSelect, sensorSelect } from 'components/Manipulator/redux';
 import { SensorTable } from 'components/SensorTable';
 import { UidsTable } from 'components/UidsTable';
+import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import {
   useFetchCloseVolumeAlertsQuery,
@@ -11,10 +13,22 @@ import {
 } from 'services/api/common';
 
 export const Dashboard = () => {
+  const datePeriod = useSelector(datePeriodSelect);
+  const formattedPeriod =
+    datePeriod.from && datePeriod.to
+      ? {
+        from: dayjs(datePeriod.from).isValid()
+          ? dayjs(datePeriod.from).unix()
+          : null,
+        to: dayjs(datePeriod.to).isValid()
+          ? dayjs(datePeriod.to).unix()
+          : null,
+      }
+      : undefined;
   const { data: profitabilityAlerts, isLoading: isProfitabilityLoading } =
-    useFetchProfitabilityAlertsQuery();
+    useFetchProfitabilityAlertsQuery(formattedPeriod);
   const { data: closeVolumeAlerts, isLoading: isCloseVolumeLoading } =
-    useFetchCloseVolumeAlertsQuery();
+    useFetchCloseVolumeAlertsQuery(formattedPeriod);
   const sensors = useSelector(sensorSelect);
 
   return (

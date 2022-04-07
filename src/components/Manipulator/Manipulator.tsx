@@ -1,5 +1,7 @@
+import ClearIcon from '@mui/icons-material/Clear';
 import { DateTimePicker } from '@mui/lab';
 import {
+  Box,
   Button,
   Checkbox,
   Divider,
@@ -9,13 +11,24 @@ import {
   TextField,
 } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
+import IconButton from '@mui/material/IconButton';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { useState } from 'react';
+import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { averageSelect, Sensors, sensorSelect, setAverage, setSensor } from './redux';
+import {
+  averageSelect,
+  clearFromPeriod,
+  clearToPeriod,
+  datePeriodSelect,
+  Sensors,
+  sensorSelect,
+  setAverage,
+  setPeriod,
+  setSensor,
+} from './redux';
 
 const timeIntervals = [
   '3 min',
@@ -31,17 +44,24 @@ const timeIntervals = [
 ];
 
 export function Manipulator() {
-  const [value, setValue] = useState<Date | null>(new Date('2014-08-18T21:11:54'));
   const dispatch = useDispatch();
   const sensors = useSelector(sensorSelect);
   const average = useSelector(averageSelect);
+  const datePeriod = useSelector(datePeriodSelect);
 
   const handleSelect = (event: SelectChangeEvent<number>) => {
     dispatch(setAverage(event.target.value as number));
   };
 
-  const handleChange = (newValue: Date | null) => {
-    setValue(newValue);
+  const handleDateChange = (type: string) => (value: Date | null) => {
+    if (value) {
+      dispatch(
+        setPeriod({
+          ...datePeriod,
+          [type]: dayjs(value).format('YYYY-MM-DDTHH:mm:ss'),
+        }),
+      );
+    }
   };
 
   const onSensorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,18 +91,40 @@ export function Manipulator() {
           }
           label="Close volume"
         />
-        <DateTimePicker
-          label="From Date/Time picker"
-          value={value}
-          onChange={handleChange}
-          renderInput={(params) => <TextField {...params} />}
-        />
-        <DateTimePicker
-          label="To Date/Time picker"
-          value={value}
-          onChange={handleChange}
-          renderInput={(params) => <TextField {...params} />}
-        />
+        <Box sx={{ position: 'relative' }}>
+          <DateTimePicker
+            label="From Date/Time picker"
+            value={datePeriod.from}
+            onChange={handleDateChange('from')}
+            renderInput={(params) => <TextField sx={{ minWidth: '250px' }} {...params} />}
+            disableIgnoringDatePartForTimeValidation
+          />
+          <IconButton
+            edge="start"
+            color="inherit"
+            sx={{ margin: '8px 0 0 -70px', position: 'absolute' }}
+            onClick={() => dispatch(clearFromPeriod())}
+          >
+            <ClearIcon />
+          </IconButton>
+        </Box>
+        <Box sx={{ position: 'relative' }}>
+          <DateTimePicker
+            label="To Date/Time picker"
+            value={datePeriod.to}
+            onChange={handleDateChange('to')}
+            renderInput={(params) => <TextField {...params} />}
+            disableIgnoringDatePartForTimeValidation
+          />
+          <IconButton
+            edge="start"
+            color="inherit"
+            sx={{ margin: '8px 0 0 -70px', position: 'absolute' }}
+            onClick={() => dispatch(clearToPeriod())}
+          >
+            <ClearIcon />
+          </IconButton>
+        </Box>
         <FormControl>
           <InputLabel id="average-label">Average</InputLabel>
           <Select
@@ -94,7 +136,6 @@ export function Manipulator() {
             displayEmpty
             onChange={handleSelect}
           >
-            <MenuItem value={1}>1</MenuItem>
             <MenuItem value={5}>5</MenuItem>
             <MenuItem value={10}>10</MenuItem>
             <MenuItem value={15}>15</MenuItem>

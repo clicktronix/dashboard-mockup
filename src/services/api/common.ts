@@ -16,9 +16,14 @@ export const commonApi = createApi({
     },
   }),
   endpoints: (build) => ({
-    fetchProfitabilityAlerts: build.query<ProfitabilityAlertsResponse, void>({
-      query: () => ({
-        url: '/v1/sensors/profitability/alerts',
+    fetchProfitabilityAlerts: build.query<
+      ProfitabilityAlertsResponse,
+      Record<string, number | null> | undefined
+    >({
+      query: (period?: Record<string, number | null>) => ({
+        url: `/v1/sensors/profitability/alerts${
+          period ? '?' + new URLSearchParams(period as any) : ''
+        }`,
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
@@ -29,9 +34,14 @@ export const commonApi = createApi({
         }
       },
     }),
-    fetchCloseVolumeAlerts: build.query<CloseVolumeAlertsResponse, void>({
-      query: () => ({
-        url: '/v1/sensors/close_volume/alerts',
+    fetchCloseVolumeAlerts: build.query<
+      CloseVolumeAlertsResponse,
+      Record<string, number | null> | undefined
+    >({
+      query: (period?: Record<string, number | null>) => ({
+        url: `/v1/sensors/close_volume/alerts${
+          period ? '?' + new URLSearchParams(period as any) : ''
+        }`,
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
