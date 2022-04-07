@@ -1,12 +1,20 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { dashboardReducer } from 'components/Dashboard/redux';
 import { heatmapReducer } from 'components/InstrumentsHeatmap/redux';
 import { manipulatorReducer } from 'components/Manipulator/redux';
+import { commonApi } from 'services/api/common';
+
+const rootReducer = combineReducers({
+  [commonApi.reducerPath]: commonApi.reducer,
+  manipulator: manipulatorReducer,
+  heatmap: heatmapReducer,
+  dashboard: dashboardReducer,
+});
 
 export const store = configureStore({
-  reducer: {
-    manipulator: manipulatorReducer,
-    heatmap: heatmapReducer,
-  },
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(commonApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

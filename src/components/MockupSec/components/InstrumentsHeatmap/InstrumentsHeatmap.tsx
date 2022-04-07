@@ -11,7 +11,9 @@ import {
   TextField,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { averageSelect } from 'components/Manipulator/redux';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getColor } from 'utils/getColor';
 
@@ -58,6 +60,7 @@ export function InstrumentsHeatmap() {
     navigate(`/instruments/${instrument}`);
   };
   const [selectedInstruments, setSelectedInstruments] = useState(instrumentsMock);
+  const average = useSelector(averageSelect);
 
   const onAutocompleteChange = (
     _: React.SyntheticEvent,
@@ -108,7 +111,7 @@ export function InstrumentsHeatmap() {
               key={instrument.name}
               sx={{ borderRadius: 'unset', margin: '2px', minWidth: 100 }}
               onClick={onClickHandler(instrument.name)}
-              chipColor={getColor(instrument.count)}
+              chipColor={getColor(instrument.count, average)}
             />
           ))}
       </Box>
