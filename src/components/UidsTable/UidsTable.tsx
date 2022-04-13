@@ -1,18 +1,19 @@
-import { Box, CircularProgress } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import MuiTable from '@mui/material/Table';
 import MuiTableBody from '@mui/material/TableBody';
 import MuiTableCell from '@mui/material/TableCell';
+import MuiTableContainer from '@mui/material/TableContainer';
 import MuiTableHead from '@mui/material/TableHead';
+import MuiTablePagination from '@mui/material/TablePagination';
 import MuiTableRow, { TableRowProps as MuiTableRowProps } from '@mui/material/TableRow';
 import { ProfitabilityAlert } from 'components/Dashboard/redux';
 import { averageSelect } from 'components/Manipulator/redux';
+import { ChangeEvent, MouseEvent, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getColor } from 'utils/getColor';
 
 type UidsTableProps = {
-  isLoading: boolean;
   alerts?: ProfitabilityAlert[];
 };
 
@@ -27,40 +28,55 @@ const CustomizedRow = styled(MuiTableRow, {
   backgroundColor: rowColor,
 }));
 
-export function UidsTable({ alerts = [], isLoading }: UidsTableProps) {
+export function UidsTable({ alerts = [] }: UidsTableProps) {
   const average = useSelector(averageSelect);
-  if (isLoading) {
-    return (
-      <Box>
-        <CircularProgress sx={{ display: 'flex', margin: '20px auto' }} />
-      </Box>
-    );
-  }
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangePage = (_: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
-    <MuiTable size="small">
-      <MuiTableHead>
-        <MuiTableRow>
-          <MuiTableCell>UUID</MuiTableCell>
-          <MuiTableCell>Trades Count</MuiTableCell>
-        </MuiTableRow>
-      </MuiTableHead>
-      <MuiTableBody>
-        {alerts
-          .slice()
-          .sort((a, b) => b.tradesCount - a.tradesCount)
-          .map((alert) => (
-            <CustomizedRow
-              key={alert.userUUID}
-              rowColor={getColor(alert.tradesCount, average)}
-            >
-              <MuiTableCell>
-                <Link to={`/uuids/${alert.userUUID}`}>{alert.userUUID}</Link>
-              </MuiTableCell>
-              <MuiTableCell>{alert.tradesCount}</MuiTableCell>
-            </CustomizedRow>
-          ))}
-      </MuiTableBody>
-    </MuiTable>
+    <MuiTableContainer>
+      <MuiTable size="small">
+        <MuiTableHead>
+          <MuiTableRow>
+            <MuiTableCell>UUID</MuiTableCell>
+            <MuiTableCell>Trades Count</MuiTableCell>
+          </MuiTableRow>
+        </MuiTableHead>
+        <MuiTableBody>
+          {[...alerts]
+            .sort((a, b) => b.tradesCount - a.tradesCount)
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((alert) => (
+              <CustomizedRow
+                key={alert.id}
+                rowColor={getColor(alert.tradesCount, average)}
+              >
+                <MuiTableCell>
+                  <Link to={`/profitability/${alert.id}`}>{alert.userUUID}</Link>
+                </MuiTableCell>
+                <MuiTableCell>{alert.tradesCount}</MuiTableCell>
+              </CustomizedRow>
+            ))}
+        </MuiTableBody>
+      </MuiTable>
+      <MuiTablePagination
+        rowsPerPageOptions={[10, 25, 50]}
+        component="div"
+        count={alerts.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </MuiTableContainer>
   );
 }

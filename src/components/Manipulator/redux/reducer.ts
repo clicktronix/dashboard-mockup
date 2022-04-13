@@ -1,9 +1,11 @@
 import { createReducer } from '@reduxjs/toolkit';
+import { d } from 'utils/dateTime';
 
 import {
   clearFromPeriod,
   clearToPeriod,
   setAverage,
+  setLimit,
   setPeriod,
   setSensor,
 } from './actions';
@@ -15,9 +17,10 @@ const initialState: Manipulator = {
     closeVolume: true,
   },
   datePeriod: {
-    from: null,
-    to: null,
+    from: d().startOf('D').format(),
+    to: d().format(),
   },
+  limit: 50,
   average: 5,
   timeInterval: undefined,
 };
@@ -29,6 +32,9 @@ export const manipulatorReducer = createReducer(initialState, (builder) =>
     })
     .addCase(setAverage, (state, action) => {
       state.average = action.payload;
+    })
+    .addCase(setLimit, (state, action) => {
+      state.limit = action.payload;
     })
     .addCase(setPeriod, (state, action) => {
       state.datePeriod = action.payload;

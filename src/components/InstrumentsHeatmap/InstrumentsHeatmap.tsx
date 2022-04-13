@@ -3,7 +3,6 @@ import {
   Box,
   Chip,
   ChipProps,
-  CircularProgress,
   Divider,
   Stack,
   TextField,
@@ -19,7 +18,6 @@ import { useNavigate } from 'react-router-dom';
 import { getColor } from 'utils/getColor';
 
 type InstrumentsHeatmapProps = {
-  isLoading: boolean;
   alerts: CloseVolumeAlert[];
 };
 
@@ -31,9 +29,10 @@ const CustomizedChip = styled(Chip, {
   shouldForwardProp: (props) => props !== 'chipColor',
 })<CustomizedChipProps>(({ chipColor }) => ({
   backgroundColor: chipColor,
+  margin: 6,
 }));
 
-export function InstrumentsHeatmap({ isLoading, alerts }: InstrumentsHeatmapProps) {
+export function InstrumentsHeatmap({ alerts }: InstrumentsHeatmapProps) {
   const alertsMap = useMemo(() => R.groupBy(R.prop('symbol'), alerts), [alerts]);
   const instruments = useMemo(() => Object.keys(alertsMap), [alertsMap]);
   const navigate = useNavigate();
@@ -46,8 +45,8 @@ export function InstrumentsHeatmap({ isLoading, alerts }: InstrumentsHeatmapProp
   }, [instruments]);
 
   const onClickHandler = useCallback(
-    (instrument: string) => () => {
-      navigate(`/instruments/${instrument}`);
+    (instrument: string, count: number) => () => {
+      navigate(`/instruments/${instrument}?limit=${count}`);
     },
     [navigate],
   );
@@ -55,14 +54,6 @@ export function InstrumentsHeatmap({ isLoading, alerts }: InstrumentsHeatmapProp
   const onChange = (_: React.SyntheticEvent, value: string[]) => {
     setSelectedInstruments(value.length === 0 ? instruments : value);
   };
-
-  if (isLoading) {
-    return (
-      <Box>
-        <CircularProgress sx={{ display: 'flex', margin: '20px auto' }} />
-      </Box>
-    );
-  }
 
   return (
     <Box>
@@ -84,18 +75,21 @@ export function InstrumentsHeatmap({ isLoading, alerts }: InstrumentsHeatmapProp
         }`}</Typography>
       </Stack>
       <Divider sx={{ my: 3 }} />
-      <Stack spacing={3} direction="row">
-        {Boolean(instruments.length) &&
-          selectedInstruments.map((i) => (
+      {Boolean(instruments.length) &&
+        selectedInstruments
+          .sort((a, b) => alertsMap[b].length - alertsMap[a].length)
+          .map((i) => (
             <CustomizedChip
-              label={`${i} (${alertsMap[i].length})`}
+              label={
+                <span>
+                  {i} <b>({alertsMap[i]?.length})</b>
+                </span>
+              }
               key={i}
-              onClick={onClickHandler(i)}
+              onClick={onClickHandler(i, alertsMap[i].length)}
               chipColor={getColor(alertsMap[i].length, average)}
             />
           ))}
-        <Chip label="More instruments..." onClick={() => {}} />
-      </Stack>
     </Box>
   );
 }
