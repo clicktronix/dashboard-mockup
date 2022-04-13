@@ -1,72 +1,83 @@
-import ClearIcon from '@mui/icons-material/Clear';
-import { DateTimePicker } from '@mui/lab';
 import {
-  Box,
   Button,
   Checkbox,
   Divider,
   FormControlLabel,
   FormGroup,
   Stack,
-  TextField,
 } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
-import IconButton from '@mui/material/IconButton';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import dayjs from 'dayjs';
+import { DateTimePicker } from 'components/shared/DateTimePicker';
+import { Dayjs } from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
+import { d } from 'utils/dateTime';
 
 import {
-  averageSelect,
   clearFromPeriod,
   clearToPeriod,
-  datePeriodSelect,
-  Sensors,
-  sensorSelect,
+  manipulatorSelect,
+  Sensor,
   setAverage,
+  setLimit,
   setPeriod,
   setSensor,
 } from './redux';
 
 const timeIntervals = [
-  '3 min',
-  '5 min',
-  '10 min',
-  '15 min',
-  '30 min',
-  '45 min',
-  '1 hour',
-  '2 hour',
-  '3 hour',
-  '5 hour',
+  { label: '3 min', interval: d().subtract(3, 'minute') },
+  { label: '5 min', interval: d().subtract(5, 'minute') },
+  { label: '10 min', interval: d().subtract(10, 'minute') },
+  { label: '15 min', interval: d().subtract(15, 'minute') },
+  { label: '30 min', interval: d().subtract(30, 'minute') },
+  { label: '45 min', interval: d().subtract(45, 'minute') },
+  { label: '1 hour', interval: d().subtract(1, 'hour') },
+  { label: '2 hour', interval: d().subtract(2, 'hour') },
+  { label: '3 hour', interval: d().subtract(3, 'hour') },
+  { label: '5 hour', interval: d().subtract(5, 'hour') },
 ];
 
 export function Manipulator() {
   const dispatch = useDispatch();
-  const sensors = useSelector(sensorSelect);
-  const average = useSelector(averageSelect);
-  const datePeriod = useSelector(datePeriodSelect);
+  const { sensors, average, datePeriod, limit } = useSelector(manipulatorSelect);
 
-  const handleSelect = (event: SelectChangeEvent<number>) => {
+  const handleAverageSelect = (event: SelectChangeEvent<number>) => {
     dispatch(setAverage(event.target.value as number));
   };
 
-  const handleDateChange = (type: string) => (value: Date | null) => {
+  const handleLimitSelect = (event: SelectChangeEvent<number>) => {
+    dispatch(setLimit(event.target.value as number));
+  };
+
+  const handleDateChange = (type: string) => (value: Date | Dayjs | null) => {
     if (value) {
       dispatch(
         setPeriod({
           ...datePeriod,
-          [type]: dayjs(value).format('YYYY-MM-DDTHH:mm:ss'),
+          [type]: d(value).format(),
         }),
       );
     }
   };
 
-  const onSensorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setSensor(e.target.name as Sensors));
+  const onIntervalClick = (interval: Dayjs) => () => {
+    dispatch(
+      setPeriod({
+        from: d(interval).format(),
+        to: d().format(),
+      }),
+    );
   };
+
+  const onSensorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setSensor(e.target.name as Sensor));
+  };
+
+  const onDatePeriodFromClear = () => dispatch(clearFromPeriod());
+
+  const onDatePeriodToClear = () => dispatch(clearToPeriod());
 
   return (
     <FormGroup>
@@ -91,40 +102,18 @@ export function Manipulator() {
           }
           label="Close volume"
         />
-        <Box sx={{ position: 'relative' }}>
-          <DateTimePicker
-            label="From Date/Time picker"
-            value={datePeriod.from}
-            onChange={handleDateChange('from')}
-            renderInput={(params) => <TextField sx={{ minWidth: '250px' }} {...params} />}
-            disableIgnoringDatePartForTimeValidation
-          />
-          <IconButton
-            edge="start"
-            color="inherit"
-            sx={{ margin: '8px 0 0 -70px', position: 'absolute' }}
-            onClick={() => dispatch(clearFromPeriod())}
-          >
-            <ClearIcon />
-          </IconButton>
-        </Box>
-        <Box sx={{ position: 'relative' }}>
-          <DateTimePicker
-            label="To Date/Time picker"
-            value={datePeriod.to}
-            onChange={handleDateChange('to')}
-            renderInput={(params) => <TextField {...params} />}
-            disableIgnoringDatePartForTimeValidation
-          />
-          <IconButton
-            edge="start"
-            color="inherit"
-            sx={{ margin: '8px 0 0 -70px', position: 'absolute' }}
-            onClick={() => dispatch(clearToPeriod())}
-          >
-            <ClearIcon />
-          </IconButton>
-        </Box>
+        <DateTimePicker
+          label="From Date/Time"
+          value={datePeriod.from}
+          onChange={handleDateChange('from')}
+          onClear={onDatePeriodFromClear}
+        />
+        <DateTimePicker
+          label="To Date/Time"
+          value={datePeriod.to}
+          onChange={handleDateChange('to')}
+          onClear={onDatePeriodToClear}
+        />
         <FormControl>
           <InputLabel id="average-label">Average</InputLabel>
           <Select
@@ -134,7 +123,7 @@ export function Manipulator() {
             label="Average"
             sx={{ width: 100, color: 'black' }}
             displayEmpty
-            onChange={handleSelect}
+            onChange={handleAverageSelect}
           >
             <MenuItem value={5}>5</MenuItem>
             <MenuItem value={10}>10</MenuItem>
@@ -142,12 +131,35 @@ export function Manipulator() {
             <MenuItem value={20}>20</MenuItem>
           </Select>
         </FormControl>
+        <FormControl>
+          <InputLabel id="limit-label">Limit</InputLabel>
+          <Select
+            labelId="limit-label"
+            id="limit"
+            value={limit}
+            label="Limit"
+            sx={{ width: 100, color: 'black' }}
+            displayEmpty
+            onChange={handleLimitSelect}
+          >
+            <MenuItem value={10}>10</MenuItem>
+            <MenuItem value={25}>25</MenuItem>
+            <MenuItem value={50}>50</MenuItem>
+            <MenuItem value={100}>100</MenuItem>
+            <MenuItem value={200}>200</MenuItem>
+          </Select>
+        </FormControl>
       </Stack>
       <Divider sx={{ my: 3 }} />
       <Stack spacing={3} direction="row">
-        {timeIntervals.map((interval) => (
-          <Button key={interval} variant="outlined" sx={{ px: 3 }}>
-            {interval}
+        {timeIntervals.map(({ label, interval }) => (
+          <Button
+            key={label}
+            onClick={onIntervalClick(interval)}
+            variant="outlined"
+            sx={{ px: 3 }}
+          >
+            {label}
           </Button>
         ))}
       </Stack>

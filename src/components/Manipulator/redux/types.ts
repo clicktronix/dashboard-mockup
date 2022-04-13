@@ -1,13 +1,14 @@
 export type Manipulator = {
-  sensors: Record<Sensors, boolean>;
+  sensors: Record<Sensor, boolean>;
   datePeriod: DatePeriod;
+  limit: number;
   average: number;
   timeInterval?: string;
 };
 
 export type DatePeriod = {
-  from: string | null;
-  to: string | null;
+  from: string;
+  to: string;
 };
 
-export type Sensors = 'profitability' | 'closeVolume';
+export type Sensor = 'profitability' | 'closeVolume';

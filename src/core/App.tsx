@@ -1,8 +1,6 @@
+import { InstrumentsTable } from 'components/InstrumentsTable';
 import { Layout } from 'components/Layout';
-import { MetricsTable } from 'components/MetricsTable';
-// import { Mockup } from 'components/Mockup';
-// import { MockupSec } from 'components/MockupSec';
-import { SpecificDashboard } from 'components/SpecificDashboard';
+import { MetricsDashboard } from 'components/MetricsDashboard';
 import { DashboardPage } from 'pages/DashboardPage';
 import { Route, Routes } from 'react-router-dom';
 
@@ -11,10 +9,9 @@ export function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<DashboardPage />} />
-        {/* <Route path="/mockup" element={<Mockup />} />
-        <Route path="/mockup2" element={<MockupSec />} /> */}
-        <Route path="/instruments/:id" element={<MetricsTable />} />
-        <Route path="/uuids/:id" element={<SpecificDashboard />} />
+        <Route path="/instruments/:instrument" element={<InstrumentsTable />} />
+        <Route path="/profitability/:id" element={<MetricsDashboard />} />
+        <Route path="/close_volume/:id" element={<MetricsDashboard />} />
       </Routes>
     </Layout>
   );

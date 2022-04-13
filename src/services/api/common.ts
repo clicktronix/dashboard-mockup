@@ -1,8 +1,18 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { setCloseVolumeAlerts, setProfitabilityAlerts } from 'components/Dashboard/redux';
+import { setMetrics } from 'components/MetricsDashboard/redux';
 import { CONFIG } from 'core/config';
 
-import { CloseVolumeAlertsResponse, ProfitabilityAlertsResponse } from './types/alerts';
+import { AlertsRequest } from './types/requests';
+import { InstrumentRequest } from './types/requests/instruments';
+import {
+  CloseVolumeAlertResponse,
+  CloseVolumeResponse,
+  MetricResponse,
+  MetricsResponse,
+  ProfitabilityAlertResponse,
+  ProfitabilityResponse,
+} from './types/responses';
 
 export const commonApi = createApi({
   reducerPath: 'api',
@@ -16,37 +26,70 @@ export const commonApi = createApi({
     },
   }),
   endpoints: (build) => ({
-    fetchProfitabilityAlerts: build.query<
-      ProfitabilityAlertsResponse,
-      Record<string, number | null> | undefined
-    >({
-      query: (period?: Record<string, number | null>) => ({
-        url: `/v1/sensors/profitability/alerts${
-          period ? '?' + new URLSearchParams(period as any) : ''
-        }`,
+    getProfitability: build.query<ProfitabilityAlertResponse[], AlertsRequest>({
+      query: ({ limit, period }) => ({
+        url: `/v1/sensors/profitability/alerts?limit=${limit}&${period}`,
       }),
+      transformResponse: (res: ProfitabilityResponse) => res.data,
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const result = await queryFulfilled;
-          dispatch(setProfitabilityAlerts(result.data.data));
+          dispatch(setProfitabilityAlerts(result.data));
         } catch (e) {
           console.error('fetchEntity error', e);
         }
       },
     }),
-    fetchCloseVolumeAlerts: build.query<
-      CloseVolumeAlertsResponse,
-      Record<string, number | null> | undefined
-    >({
-      query: (period?: Record<string, number | null>) => ({
-        url: `/v1/sensors/close_volume/alerts${
-          period ? '?' + new URLSearchParams(period as any) : ''
-        }`,
+    getCloseVolume: build.query<CloseVolumeAlertResponse[], AlertsRequest>({
+      query: ({ limit, period }) => ({
+        url: `/v1/sensors/close_volume/alerts?limit=${limit}&${period}`,
       }),
+      transformResponse: (res: CloseVolumeResponse) => res.data,
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const result = await queryFulfilled;
-          dispatch(setCloseVolumeAlerts(result.data.data));
+          dispatch(setCloseVolumeAlerts(result.data));
+        } catch (e) {
+          console.error('fetchEntity error', e);
+        }
+      },
+    }),
+    getProfitabilityById: build.query<MetricResponse, string>({
+      query: (id) => ({
+        url: `/v1/sensors/profitability/alert/${id}`,
+      }),
+      transformResponse: (res: MetricsResponse) => res.data,
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const result = await queryFulfilled;
+          dispatch(setMetrics(result.data));
+        } catch (e) {
+          console.error('fetchEntity error', e);
+        }
+      },
+    }),
+    getCloseVolumeById: build.query<MetricResponse, string>({
+      query: (id) => ({
+        url: `/v1/sensors/close_volume/alert/${id}`,
+      }),
+      transformResponse: (res: MetricsResponse) => res.data,
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const result = await queryFulfilled;
+          dispatch(setMetrics(result.data));
+        } catch (e) {
+          console.error('fetchEntity error', e);
+        }
+      },
+    }),
+    getCloseVolumeInstrument: build.query<CloseVolumeAlertResponse[], InstrumentRequest>({
+      query: ({ limit, id, period }) => ({
+        url: `/v1/sensors/close_volume/alerts?limit=${limit}&symbol=${id}&${period}`,
+      }),
+      transformResponse: (res: CloseVolumeResponse) => res.data,
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
         } catch (e) {
           console.error('fetchEntity error', e);
         }
@@ -55,5 +98,10 @@ export const commonApi = createApi({
   }),
 });
 
-export const { useFetchCloseVolumeAlertsQuery, useFetchProfitabilityAlertsQuery } =
-  commonApi;
+export const {
+  useGetCloseVolumeQuery,
+  useGetProfitabilityQuery,
+  useGetProfitabilityByIdQuery,
+  useGetCloseVolumeByIdQuery,
+  useGetCloseVolumeInstrumentQuery,
+} = commonApi;
