@@ -20,8 +20,7 @@ export function DateTimePicker({ value, label, onClear, onChange }: DateTimePick
       />
       <IconButton
         edge="start"
-        color="inherit"
-        sx={{ margin: '8px 0 0 -82px', position: 'absolute', color: 'inherit' }}
+        sx={{ margin: '8px 0 0 -82px', position: 'absolute' }}
         onClick={onClear}
       >
         <ClearIcon />

@@ -15,5 +15,5 @@ export const datePeriodParamsSelect = (state: RootState) => {
     from: d(from).utc().unix().toString(),
     to: d(to).utc().unix().toString(),
   };
-  return `?${new URLSearchParams(params).toString()}`;
+  return `${new URLSearchParams(params).toString()}`;
 };
