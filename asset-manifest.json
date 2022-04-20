@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.js": "/static/js/main.a7db885e.js",
-    "index.html": "/index.html",
-    "main.a7db885e.js.map": "/static/js/main.a7db885e.js.map"
+    "main.js": "/dashboard-mockup/static/js/main.a7db885e.js",
+    "index.html": "/dashboard-mockup/index.html",
+    "main.a7db885e.js.map": "/dashboard-mockup/static/js/main.a7db885e.js.map"
   },
   "entrypoints": [
     "static/js/main.a7db885e.js"
