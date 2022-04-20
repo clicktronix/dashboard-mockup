@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import MuiTable from '@mui/material/Table';
 import MuiTableBody from '@mui/material/TableBody';
 import MuiTableCell from '@mui/material/TableCell';
@@ -11,6 +11,7 @@ import { Tile } from 'components/shared/Tile';
 import { ChangeEvent, MouseEvent, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useGetCloseVolumeInstrumentQuery } from 'services/api';
 import { useQuery } from 'utils/hooks/useQuery';
 
@@ -38,9 +39,7 @@ export function InstrumentsTable() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Tile isFetching={isFetching}>
-          <Typography variant="h5">{instrument}</Typography>
-        </Tile>
+        <Tile isFetching={isFetching} title={instrument} withReturn />
       </Grid>
       <Grid item xs={12}>
         <Tile isFetching={isFetching}>
@@ -61,7 +60,9 @@ export function InstrumentsTable() {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((alert) => (
                     <MuiTableRow key={alert.id}>
-                      <MuiTableCell>{alert.id}</MuiTableCell>
+                      <MuiTableCell>
+                        <Link to={`/close_volume/${alert.id}`}>{alert.id}</Link>
+                      </MuiTableCell>
                       <MuiTableCell>{alert.symbol}</MuiTableCell>
                       <MuiTableCell>{alert.typeOperation}</MuiTableCell>
                       <MuiTableCell>{alert.tradesCount}</MuiTableCell>

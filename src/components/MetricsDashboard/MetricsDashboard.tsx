@@ -1,6 +1,7 @@
-import { Grid, Paper, Typography } from '@mui/material';
+import { Grid, Paper } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Chart } from 'components/Chart';
+import { InstrumentDetails } from 'components/InstrumentDetails';
 import { MetricsTable } from 'components/MetricsTable';
 import { Tile } from 'components/shared/Tile';
 import { useLocation } from 'react-router-dom';
@@ -28,13 +29,21 @@ export function MetricsDashboard() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Tile isFetching={isFetching}>
-          <Typography variant="h5">{data?.userUUID}</Typography>
-        </Tile>
+        <Tile
+          isFetching={isFetching}
+          withReturn
+          title={data?.userUUID || data?.id}
+        ></Tile>
       </Grid>
       <Grid item xs={12}>
         <Tile isFetching={isFetching}>
-          <MetricsTable data={data} sensor={sensor} />
+          {/* This is a temporary solution
+          We are waiting for a backend comparable with profitability to appear */}
+          {sensor === 'close_volume' ? (
+            <InstrumentDetails data={data as any} />
+          ) : (
+            <MetricsTable data={data} sensor={sensor} />
+          )}
         </Tile>
       </Grid>
       <Grid item xs={6}>

@@ -12,6 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { DateTimePicker } from 'components/shared/DateTimePicker';
 import { Dayjs } from 'dayjs';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { d } from 'utils/dateTime';
 
@@ -26,17 +27,22 @@ import {
   setSensor,
 } from './redux';
 
-const timeIntervals = [
-  { label: '3 min', interval: d().subtract(3, 'minute') },
-  { label: '5 min', interval: d().subtract(5, 'minute') },
-  { label: '10 min', interval: d().subtract(10, 'minute') },
-  { label: '15 min', interval: d().subtract(15, 'minute') },
-  { label: '30 min', interval: d().subtract(30, 'minute') },
-  { label: '45 min', interval: d().subtract(45, 'minute') },
-  { label: '1 hour', interval: d().subtract(1, 'hour') },
-  { label: '2 hour', interval: d().subtract(2, 'hour') },
-  { label: '3 hour', interval: d().subtract(3, 'hour') },
-  { label: '5 hour', interval: d().subtract(5, 'hour') },
+type Interval = {
+  label: string;
+  interval: [number, string];
+};
+
+const timeIntervals: Interval[] = [
+  { label: '3 min', interval: [3, 'minute'] },
+  { label: '5 min', interval: [5, 'minute'] },
+  { label: '10 min', interval: [10, 'minute'] },
+  { label: '15 min', interval: [15, 'minute'] },
+  { label: '30 min', interval: [30, 'minute'] },
+  { label: '45 min', interval: [45, 'minute'] },
+  { label: '1 hour', interval: [1, 'hour'] },
+  { label: '2 hour', interval: [2, 'hour'] },
+  { label: '3 hour', interval: [3, 'hour'] },
+  { label: '5 hour', interval: [5, 'hour'] },
 ];
 
 export function Manipulator() {
@@ -62,14 +68,16 @@ export function Manipulator() {
     }
   };
 
-  const onIntervalClick = (interval: Dayjs) => () => {
-    dispatch(
-      setPeriod({
-        from: d(interval).format(),
-        to: d().format(),
-      }),
-    );
-  };
+  const onIntervalClick = useCallback(
+    (interval: [number, string]) => () =>
+      dispatch(
+        setPeriod({
+          from: d().subtract(interval[0], interval[1]).format(),
+          to: d().format(),
+        }),
+      ),
+    [dispatch],
+  );
 
   const onSensorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setSensor(e.target.name as Sensor));

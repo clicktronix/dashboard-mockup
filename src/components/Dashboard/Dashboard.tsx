@@ -30,14 +30,14 @@ export const Dashboard = () => {
       </Grid>
       {sensors.closeVolume && (
         <Grid item xs={12}>
-          <Tile isFetching={isCloseVolumeFetching}>
+          <Tile isFetching={isCloseVolumeFetching} title="Close volume alerts">
             <InstrumentsHeatmap alerts={closeVolumeAlerts ? closeVolumeAlerts : []} />
           </Tile>
         </Grid>
       )}
       {sensors.profitability && (
         <Grid item xs={6}>
-          <Tile isFetching={isProfitabilityFetching}>
+          <Tile isFetching={isProfitabilityFetching} title="Profitability alerts">
             <UidsTable alerts={profitabilityAlerts ? profitabilityAlerts : []} />
           </Tile>
         </Grid>
