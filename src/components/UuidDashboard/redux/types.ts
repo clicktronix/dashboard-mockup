@@ -1,5 +1,9 @@
 import { Trade } from 'services/api/types/responses';
 
+import { setMetrics } from './actions';
+
+export type UuidDashboardActions = ReturnType<typeof setMetrics>;
+
 export type Metrics = {
   metrics: Metric | null;
 };

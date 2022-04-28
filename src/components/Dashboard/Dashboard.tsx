@@ -1,6 +1,5 @@
 import { Grid } from '@mui/material';
 import { InstrumentsHeatmap } from 'components/InstrumentsHeatmap';
-import { Manipulator } from 'components/Manipulator';
 import {
   datePeriodParamsSelect,
   limitSelect,
@@ -23,21 +22,16 @@ export const Dashboard = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12}>
-        <Tile>
-          <Manipulator />
-        </Tile>
-      </Grid>
       {sensors.closeVolume && (
         <Grid item xs={12}>
-          <Tile isFetching={isCloseVolumeFetching} title="Close volume alerts">
+          <Tile isFetching={isCloseVolumeFetching} title="Instruments bar">
             <InstrumentsHeatmap alerts={closeVolumeAlerts ? closeVolumeAlerts : []} />
           </Tile>
         </Grid>
       )}
       {sensors.profitability && (
         <Grid item xs={6}>
-          <Tile isFetching={isProfitabilityFetching} title="Profitability alerts">
+          <Tile isFetching={isProfitabilityFetching} title="UUIDs bar">
             <UidsTable alerts={profitabilityAlerts ? profitabilityAlerts : []} />
           </Tile>
         </Grid>

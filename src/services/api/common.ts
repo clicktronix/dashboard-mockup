@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { setCloseVolumeAlerts, setProfitabilityAlerts } from 'components/Dashboard/redux';
-import { setMetrics } from 'components/MetricsDashboard/redux';
+import { setMetrics } from 'components/UuidDashboard/redux';
 import { CONFIG } from 'core/config';
 
 import { AlertsRequest } from './types/requests';
@@ -83,8 +83,8 @@ export const commonApi = createApi({
       },
     }),
     getCloseVolumeInstrument: build.query<CloseVolumeAlertResponse[], InstrumentRequest>({
-      query: ({ limit, id, period }) => ({
-        url: `/v1/sensors/close_volume/alerts?limit=${limit}&symbol=${id}&${period}`,
+      query: ({ limit, symbol, period }) => ({
+        url: `/v1/sensors/close_volume/alerts?limit=${limit}&symbol=${symbol}&${period}`,
       }),
       transformResponse: (res: CloseVolumeResponse) => res.data,
       async onQueryStarted(arg, { queryFulfilled }) {
@@ -103,5 +103,7 @@ export const {
   useGetProfitabilityQuery,
   useGetProfitabilityByIdQuery,
   useGetCloseVolumeByIdQuery,
-  useGetCloseVolumeInstrumentQuery,
+  useLazyGetCloseVolumeByIdQuery,
+  useLazyGetProfitabilityByIdQuery,
+  useLazyGetCloseVolumeInstrumentQuery,
 } = commonApi;

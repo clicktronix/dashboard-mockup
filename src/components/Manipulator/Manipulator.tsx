@@ -12,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { DateTimePicker } from 'components/shared/DateTimePicker';
 import { Dayjs } from 'dayjs';
-import { useCallback } from 'react';
+import { ChangeEvent, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { d } from 'utils/dateTime';
 
@@ -79,7 +79,7 @@ export function Manipulator() {
     [dispatch],
   );
 
-  const onSensorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onSensorChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(setSensor(e.target.name as Sensor));
   };
 

@@ -2,6 +2,9 @@ import { red } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
+  typography: {
+    fontSize: 12,
+  },
   palette: {
     primary: {
       main: '#556cd6',
