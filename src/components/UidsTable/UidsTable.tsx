@@ -61,7 +61,9 @@ export function UidsTable({ alerts = [] }: UidsTableProps) {
                 rowColor={getColor(alert.tradesCount, average)}
               >
                 <MuiTableCell>
-                  <Link to={`/profitability/${alert.id}`}>{alert.userUUID}</Link>
+                  <Link to={`/uuid/${alert.id}`} state={{ sensor: 'profitability' }}>
+                    {alert.userUUID}
+                  </Link>
                 </MuiTableCell>
                 <MuiTableCell>{alert.tradesCount}</MuiTableCell>
               </CustomizedRow>

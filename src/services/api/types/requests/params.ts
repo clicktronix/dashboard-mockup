@@ -9,3 +9,7 @@ export type WithLimit = {
 export type WithId = {
   id: string;
 };
+
+export type WithSymbol = {
+  symbol: string;
+};

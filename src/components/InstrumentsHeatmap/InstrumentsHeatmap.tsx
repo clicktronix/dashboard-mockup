@@ -12,10 +12,13 @@ import { styled } from '@mui/material/styles';
 import { CloseVolumeAlert } from 'components/Dashboard/redux';
 import { averageSelect } from 'components/Manipulator/redux';
 import * as R from 'ramda';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useCallback, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getColor } from 'utils/getColor';
+
+import { setInstrument } from './redux/actions';
+import { selectedInstrumentsSelect } from './redux/selectors';
 
 type InstrumentsHeatmapProps = {
   alerts: CloseVolumeAlert[];
@@ -36,23 +39,23 @@ export function InstrumentsHeatmap({ alerts }: InstrumentsHeatmapProps) {
   const alertsMap = useMemo(() => R.groupBy(R.prop('symbol'), alerts), [alerts]);
   const instruments = useMemo(() => Object.keys(alertsMap), [alertsMap]);
   const navigate = useNavigate();
-
-  const [selectedInstruments, setSelectedInstruments] = useState<string[]>([]);
+  const dispatch = useDispatch();
+  const selectedInstruments = useSelector(selectedInstrumentsSelect);
   const average = useSelector(averageSelect);
 
-  useEffect(() => {
-    setSelectedInstruments(instruments);
-  }, [instruments]);
-
   const onClickHandler = useCallback(
-    (instrument: string, count: number) => () => {
-      navigate(`/instruments/${instrument}?limit=${count}`);
+    (instrument: string) => () => {
+      navigate(`/symbol/${instrument}`, {
+        state: {
+          sensor: 'close_volume',
+        },
+      });
     },
     [navigate],
   );
 
   const onChange = (_: React.SyntheticEvent, value: string[]) => {
-    setSelectedInstruments(value.length === 0 ? instruments : value);
+    dispatch(setInstrument(value));
   };
 
   return (
@@ -61,6 +64,7 @@ export function InstrumentsHeatmap({ alerts }: InstrumentsHeatmapProps) {
         <Autocomplete
           multiple
           id="instruments"
+          value={selectedInstruments}
           sx={{ width: 500 }}
           options={instruments}
           onChange={onChange}
@@ -75,21 +79,21 @@ export function InstrumentsHeatmap({ alerts }: InstrumentsHeatmapProps) {
         }`}</Typography>
       </Stack>
       <Divider sx={{ my: 3 }} />
-      {Boolean(instruments.length) &&
-        selectedInstruments
-          .sort((a, b) => alertsMap[b].length - alertsMap[a].length)
-          .map((i) => (
-            <CustomizedChip
-              label={
-                <span>
-                  {i} <b>({alertsMap[i]?.length})</b>
-                </span>
-              }
-              key={i}
-              onClick={onClickHandler(i, alertsMap[i].length)}
-              chipColor={getColor(alertsMap[i].length, average)}
-            />
-          ))}
+      {(selectedInstruments.length > 0 ? selectedInstruments : instruments)
+        .slice()
+        .sort((a, b) => alertsMap[b].length - alertsMap[a].length)
+        .map((i) => (
+          <CustomizedChip
+            label={
+              <span>
+                {i} <b>({alertsMap[i]?.length})</b>
+              </span>
+            }
+            key={i}
+            onClick={onClickHandler(i)}
+            chipColor={getColor(alertsMap[i].length, average)}
+          />
+        ))}
     </Box>
   );
 }

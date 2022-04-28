@@ -7,7 +7,7 @@ const initialState: Metrics = {
   metrics: null,
 };
 
-export const metricsReducer = createReducer(initialState, (builder) =>
+export const uuidDashboardReducer = createReducer(initialState, (builder) =>
   builder.addCase(setMetrics, (state, action) => {
     state.metrics = action.payload;
   }),

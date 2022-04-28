@@ -9,6 +9,6 @@ const initialState: Heatmap = {
 
 export const heatmapReducer = createReducer(initialState, (builder) =>
   builder.addCase(setInstrument, (state, action) => {
-    state.selectedInstruments.push(action.payload);
+    state.selectedInstruments = action.payload.slice();
   }),
 );

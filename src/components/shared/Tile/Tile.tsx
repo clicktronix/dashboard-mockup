@@ -5,6 +5,7 @@ import {
   CircularProgress,
   IconButton,
   Paper,
+  PaperProps,
   Typography,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -14,8 +15,9 @@ type TileProps = {
   title?: string;
   withReturn?: boolean;
   isFetching?: boolean;
+  searchBar?: JSX.Element;
   error?: string;
-};
+} & PaperProps;
 
 export function Tile({
   children,
@@ -23,10 +25,13 @@ export function Tile({
   withReturn = false,
   title,
   error,
+  searchBar,
+  ...restProps
 }: TileProps) {
   const navigate = useNavigate();
 
   const onReturnClick = () => navigate(-1);
+
   const renderContent = () => {
     if (isFetching) {
       return (
@@ -42,14 +47,17 @@ export function Tile({
   };
 
   return (
-    <Paper sx={{ p: 2 }}>
-      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        {withReturn && (
-          <IconButton sx={{ marginRight: 2 }} onClick={onReturnClick}>
-            <ArrowBackIcon />
-          </IconButton>
-        )}
-        {title && <Typography variant="h6">{title}</Typography>}
+    <Paper sx={{ p: 2 }} {...restProps}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+          {withReturn && (
+            <IconButton sx={{ marginRight: 2 }} onClick={onReturnClick}>
+              <ArrowBackIcon />
+            </IconButton>
+          )}
+          {title && <Typography variant="h6">{title}</Typography>}
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'row' }}>{searchBar}</Box>
       </Box>
       {renderContent()}
     </Paper>

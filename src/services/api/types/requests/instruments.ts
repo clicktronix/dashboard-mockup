@@ -1,3 +1,3 @@
-import { WithId, WithLimit, WithPeriod } from './params';
+import { WithLimit, WithPeriod, WithSymbol } from './params';
 
-export type InstrumentRequest = WithId & WithLimit & WithPeriod;
+export type InstrumentRequest = WithSymbol & WithLimit & WithPeriod;

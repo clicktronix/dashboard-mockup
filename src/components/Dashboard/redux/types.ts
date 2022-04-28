@@ -1,3 +1,9 @@
+import { setCloseVolumeAlerts, setProfitabilityAlerts } from './actions';
+
+export type DashboardActions =
+  | ReturnType<typeof setProfitabilityAlerts>
+  | ReturnType<typeof setCloseVolumeAlerts>;
+
 export type Dashboard = {
   profitabilityAlerts: ProfitabilityAlert[];
   closeVolumeAlerts: CloseVolumeAlert[];

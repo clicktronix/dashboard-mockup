@@ -1,5 +1,7 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
+import SensorOccupiedIcon from '@mui/icons-material/SensorOccupied';
 import { Toolbar } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import MuiDrawer, { DrawerProps as MuiDrawerProps } from '@mui/material/Drawer';
@@ -61,6 +63,22 @@ export function Drawer({ toggle, ...rest }: DrawerProps) {
             <DashboardIcon />
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
+        </ListItemButton>
+      </List>
+      <List component="nav">
+        <ListItemButton component={Link} to="/symbol">
+          <ListItemIcon>
+            <EuroSymbolIcon />
+          </ListItemIcon>
+          <ListItemText primary="Symbol" />
+        </ListItemButton>
+      </List>
+      <List component="nav">
+        <ListItemButton component={Link} to="/uuid">
+          <ListItemIcon>
+            <SensorOccupiedIcon />
+          </ListItemIcon>
+          <ListItemText primary="UUID" />
         </ListItemButton>
       </List>
     </CustomizedDrawer>
