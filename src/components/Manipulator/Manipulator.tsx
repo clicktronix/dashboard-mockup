@@ -20,6 +20,7 @@ import {
   clearFromPeriod,
   clearToPeriod,
   manipulatorSelect,
+  resetManipulator,
   Sensor,
   setAverage,
   setLimit,
@@ -86,6 +87,8 @@ export function Manipulator() {
   const onDatePeriodFromClear = () => dispatch(clearFromPeriod());
 
   const onDatePeriodToClear = () => dispatch(clearToPeriod());
+
+  const onResetManipulator = () => dispatch(resetManipulator());
 
   return (
     <FormGroup>
@@ -157,15 +160,16 @@ export function Manipulator() {
             <MenuItem value={200}>200</MenuItem>
           </Select>
         </FormControl>
+        <Button onClick={onResetManipulator}>Reset all</Button>
       </Stack>
       <Divider sx={{ my: 3 }} />
-      <Stack spacing={3} direction="row">
+      <Stack spacing={2} direction="row">
         {timeIntervals.map(({ label, interval }) => (
           <Button
             key={label}
             onClick={onIntervalClick(interval)}
             variant="outlined"
-            sx={{ px: 3 }}
+            sx={{ px: 1 }}
           >
             {label}
           </Button>

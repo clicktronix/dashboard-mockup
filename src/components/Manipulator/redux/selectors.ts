@@ -2,7 +2,7 @@ import { RootState } from 'core/store';
 import { d } from 'utils/dateTime';
 
 export const manipulatorSelect = (state: RootState) => state.manipulator;
-export const sensorSelect = (state: RootState) => state.manipulator.sensors;
+export const sensorsSelect = (state: RootState) => state.manipulator.sensors;
 export const averageSelect = (state: RootState) => state.manipulator.average;
 export const limitSelect = (state: RootState) => state.manipulator.limit;
 export const datePeriodSelect = (state: RootState) => state.manipulator.datePeriod;

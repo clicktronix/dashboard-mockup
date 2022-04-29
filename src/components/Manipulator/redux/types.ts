@@ -1,6 +1,7 @@
 import {
   clearFromPeriod,
   clearToPeriod,
+  resetManipulator,
   setAverage,
   setLimit,
   setPeriod,
@@ -13,7 +14,8 @@ export type ManipulatorActions =
   | ReturnType<typeof setPeriod>
   | ReturnType<typeof setLimit>
   | ReturnType<typeof clearToPeriod>
-  | ReturnType<typeof clearFromPeriod>;
+  | ReturnType<typeof clearFromPeriod>
+  | ReturnType<typeof resetManipulator>;
 
 export type Manipulator = {
   sensors: Record<Sensor, boolean>;

@@ -99,8 +99,8 @@ export const commonApi = createApi({
 });
 
 export const {
-  useGetCloseVolumeQuery,
-  useGetProfitabilityQuery,
+  useLazyGetCloseVolumeQuery,
+  useLazyGetProfitabilityQuery,
   useGetProfitabilityByIdQuery,
   useGetCloseVolumeByIdQuery,
   useLazyGetCloseVolumeByIdQuery,
