@@ -4,6 +4,7 @@ import { d } from 'utils/dateTime';
 import {
   clearFromPeriod,
   clearToPeriod,
+  resetManipulator,
   setAverage,
   setLimit,
   setPeriod,
@@ -44,5 +45,6 @@ export const manipulatorReducer = createReducer(initialState, (builder) =>
     })
     .addCase(clearFromPeriod, (state) => {
       state.datePeriod.from = initialState.datePeriod.from;
-    }),
+    })
+    .addCase(resetManipulator, () => initialState),
 );

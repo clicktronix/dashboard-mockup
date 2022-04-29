@@ -3,22 +3,46 @@ import { InstrumentsHeatmap } from 'components/InstrumentsHeatmap';
 import {
   datePeriodParamsSelect,
   limitSelect,
-  sensorSelect,
+  sensorsSelect,
 } from 'components/Manipulator/redux';
 import { SensorTable } from 'components/SensorTable';
 import { Tile } from 'components/shared/Tile';
 import { UidsTable } from 'components/UidsTable';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useGetCloseVolumeQuery, useGetProfitabilityQuery } from 'services/api/common';
+import {
+  useLazyGetCloseVolumeQuery,
+  useLazyGetProfitabilityQuery,
+} from 'services/api/common';
 
 export const Dashboard = () => {
   const datePeriodParams = useSelector(datePeriodParamsSelect);
   const limit = useSelector(limitSelect);
-  const { data: profitabilityAlerts, isFetching: isProfitabilityFetching } =
-    useGetProfitabilityQuery({ limit, period: datePeriodParams });
-  const { data: closeVolumeAlerts, isFetching: isCloseVolumeFetching } =
-    useGetCloseVolumeQuery({ limit, period: datePeriodParams });
-  const sensors = useSelector(sensorSelect);
+  const sensors = useSelector(sensorsSelect);
+  const [
+    fetchCloseVolume,
+    { isFetching: isCloseVolumeFetching, data: closeVolumeAlerts = [] },
+  ] = useLazyGetCloseVolumeQuery();
+  const [
+    fetchProfitability,
+    { isFetching: isProfitabilityFetching, data: profitabilityAlerts = [] },
+  ] = useLazyGetProfitabilityQuery();
+
+  useEffect(() => {
+    if (sensors.closeVolume) {
+      fetchCloseVolume({ limit, period: datePeriodParams });
+    }
+    if (sensors.profitability) {
+      fetchProfitability({ limit, period: datePeriodParams });
+    }
+  }, [
+    datePeriodParams,
+    fetchCloseVolume,
+    fetchProfitability,
+    limit,
+    sensors.closeVolume,
+    sensors.profitability,
+  ]);
 
   return (
     <Grid container spacing={3}>

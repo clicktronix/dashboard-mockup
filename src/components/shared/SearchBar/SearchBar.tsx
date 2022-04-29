@@ -21,7 +21,7 @@ export function SearchBar({ value, onClick, onChange }: SearchBarProps) {
   return (
     <Paper
       component="form"
-      sx={{ p: 0.5, display: 'flex', alignItems: 'center', width: 250 }}
+      sx={{ p: 0.5, display: 'flex', alignItems: 'center', width: 330 }}
     >
       <InputBase
         value={value}
