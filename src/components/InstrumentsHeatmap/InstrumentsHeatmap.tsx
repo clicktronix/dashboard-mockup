@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { averageSelect } from 'components/Manipulator/redux';
-import * as R from 'ramda';
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
