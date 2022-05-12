@@ -5,11 +5,11 @@ import MuiTableCell from '@mui/material/TableCell';
 import MuiTableHead from '@mui/material/TableHead';
 import MuiTableRow from '@mui/material/TableRow';
 import { CONFIG } from 'core/config';
-import { MetricResponse } from 'services/api/types/responses/metrics';
+import { ProfitabilityAlertResponse } from 'services/api/types/responses';
 
 type MetricsTableProps = {
   sensor: string;
-  data?: MetricResponse;
+  data?: ProfitabilityAlertResponse;
 };
 
 export function MetricsTable({ data, sensor }: MetricsTableProps) {
@@ -52,7 +52,7 @@ export function MetricsTable({ data, sensor }: MetricsTableProps) {
           </MuiTableCell>
           <MuiTableCell>-</MuiTableCell>
           <MuiTableCell>{data.fullProfitValue?.toFixed(2)}</MuiTableCell>
-          <MuiTableCell>{data.profitabilityValue?.toFixed(2)}</MuiTableCell>
+          <MuiTableCell>{data.profitabilityValue}</MuiTableCell>
           <MuiTableCell>-</MuiTableCell>
           <MuiTableCell>-</MuiTableCell>
           <MuiTableCell>

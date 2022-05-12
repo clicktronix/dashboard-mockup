@@ -49,7 +49,12 @@ export function SymbolDashboard() {
           title={symbol || 'Enter instrument name'}
           withReturn
           searchBar={
-            <SearchBar value={symbol} onChange={onSearchChange} onClick={onSearchClick} />
+            <SearchBar
+              value={symbol}
+              placeholder="Search instrument"
+              onChange={onSearchChange}
+              onClick={onSearchClick}
+            />
           }
         />
       </Grid>

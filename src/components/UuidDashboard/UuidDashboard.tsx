@@ -60,7 +60,12 @@ export function UuidDashboard() {
           title={uuid || 'Enter id'}
           withReturn
           searchBar={
-            <SearchBar value={uuid} onChange={onSearchChange} onClick={onSearchClick} />
+            <SearchBar
+              value={uuid}
+              placeholder="Search by UUID"
+              onChange={onSearchChange}
+              onClick={onSearchClick}
+            />
           }
         />
       </Grid>
@@ -74,7 +79,7 @@ export function UuidDashboard() {
                 {sensor === 'close_volume' ? (
                   <InstrumentDetails data={data as any} />
                 ) : (
-                  <MetricsTable data={data} sensor={sensor} />
+                  <MetricsTable data={data as any} sensor={sensor} />
                 )}
               </Tile>
             </Grid>

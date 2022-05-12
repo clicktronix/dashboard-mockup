@@ -3,9 +3,19 @@ export type ProfitabilityResponse = {
   data: ProfitabilityAlertResponse[];
 };
 
+export type ProfitabilityResponseById = {
+  code: number;
+  data: ProfitabilityAlertResponse;
+};
+
 export type CloseVolumeResponse = {
   code: number;
   data: CloseVolumeAlertResponse[];
+};
+
+export type CloseVolumeResponseById = {
+  code: number;
+  data: CloseVolumeAlertResponse;
 };
 
 export type ProfitabilityAlertResponse = {

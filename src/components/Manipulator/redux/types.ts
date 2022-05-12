@@ -18,7 +18,7 @@ export type ManipulatorActions =
   | ReturnType<typeof resetManipulator>;
 
 export type Manipulator = {
-  sensors: Record<Sensor, boolean>;
+  sensors: Record<string, boolean>;
   datePeriod: DatePeriod;
   limit: number;
   average: number;
@@ -29,5 +29,3 @@ export type DatePeriod = {
   from: string;
   to: string;
 };
-
-export type Sensor = 'profitability' | 'closeVolume';

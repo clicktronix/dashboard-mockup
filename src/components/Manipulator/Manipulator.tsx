@@ -1,10 +1,10 @@
 import {
+  Autocomplete,
   Button,
-  Checkbox,
   Divider,
-  FormControlLabel,
   FormGroup,
   Stack,
+  TextField,
 } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -12,16 +12,17 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { DateTimePicker } from 'components/shared/DateTimePicker';
 import { Dayjs } from 'dayjs';
-import { ChangeEvent, useCallback } from 'react';
+import { SyntheticEvent, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { camelize } from 'utils/camelize';
 import { d } from 'utils/dateTime';
 
 import {
   clearFromPeriod,
   clearToPeriod,
+  initialDisabledSensors,
   manipulatorSelect,
   resetManipulator,
-  Sensor,
   setAverage,
   setLimit,
   setPeriod,
@@ -31,6 +32,11 @@ import {
 type Interval = {
   label: string;
   interval: [number, string];
+};
+
+const sensorLabels: Record<string, string> = {
+  profitability: 'Profitability',
+  closeVolume: 'Close Volume',
 };
 
 const timeIntervals: Interval[] = [
@@ -49,6 +55,17 @@ const timeIntervals: Interval[] = [
 export function Manipulator() {
   const dispatch = useDispatch();
   const { sensors, average, datePeriod, limit } = useSelector(manipulatorSelect);
+  const sensorOptions = useMemo(
+    () => Object.keys(sensors).map((sensor) => sensorLabels[sensor]),
+    [sensors],
+  );
+  const sensorValues = useMemo(
+    () =>
+      Object.entries(sensors)
+        .filter((sensor) => sensor[1])
+        .map((sensor) => sensorLabels[sensor[0]]),
+    [sensors],
+  );
 
   const handleAverageSelect = (event: SelectChangeEvent<number>) => {
     dispatch(setAverage(event.target.value as number));
@@ -80,8 +97,25 @@ export function Manipulator() {
     [dispatch],
   );
 
-  const onSensorChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(setSensor(e.target.name as Sensor));
+  const onSensorChange = (_: SyntheticEvent<Element, Event>, value: string[]) => {
+    if (!Array.isArray(value)) {
+      return;
+    }
+    if (value.length === 0) {
+      return dispatch(
+        setSensor({
+          ...initialDisabledSensors,
+        }),
+      );
+    }
+    const toggledSensors = value.reduce(
+      (selectedSensors, sensor) => {
+        selectedSensors[camelize(sensor)] = true;
+        return selectedSensors;
+      },
+      { ...initialDisabledSensors } as Record<string, boolean>,
+    );
+    dispatch(setSensor(toggledSensors));
   };
 
   const onDatePeriodFromClear = () => dispatch(clearFromPeriod());
@@ -92,39 +126,21 @@ export function Manipulator() {
 
   return (
     <FormGroup>
-      <Stack spacing={4} direction="row">
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={sensors.profitability}
-              name="profitability"
-              onChange={onSensorChange}
-            />
-          }
-          label="Profitability"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={sensors.closeVolume}
-              name="closeVolume"
-              onChange={onSensorChange}
-            />
-          }
-          label="Close volume"
-        />
-        <DateTimePicker
-          label="From Date/Time"
-          value={datePeriod.from}
-          onChange={handleDateChange('from')}
-          onClear={onDatePeriodFromClear}
-        />
-        <DateTimePicker
-          label="To Date/Time"
-          value={datePeriod.to}
-          onChange={handleDateChange('to')}
-          onClear={onDatePeriodToClear}
-        />
+      <Stack spacing={4} direction="row" alignItems="center">
+        <FormControl sx={{ m: 1 }}>
+          <Autocomplete
+            multiple
+            id="sensors"
+            value={sensorValues}
+            sx={{ width: 365 }}
+            options={sensorOptions}
+            onChange={onSensorChange}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField {...params} label="Select sensor" placeholder="Sensors" />
+            )}
+          />
+        </FormControl>
         <FormControl>
           <InputLabel id="average-label">Average</InputLabel>
           <Select
@@ -163,7 +179,7 @@ export function Manipulator() {
         <Button onClick={onResetManipulator}>Reset all</Button>
       </Stack>
       <Divider sx={{ my: 3 }} />
-      <Stack spacing={2} direction="row">
+      <Stack spacing={2} direction="row" alignItems="center">
         {timeIntervals.map(({ label, interval }) => (
           <Button
             key={label}
@@ -174,6 +190,18 @@ export function Manipulator() {
             {label}
           </Button>
         ))}
+        <DateTimePicker
+          label="From Date/Time"
+          value={datePeriod.from}
+          onChange={handleDateChange('from')}
+          onClear={onDatePeriodFromClear}
+        />
+        <DateTimePicker
+          label="To Date/Time"
+          value={datePeriod.to}
+          onChange={handleDateChange('to')}
+          onClear={onDatePeriodToClear}
+        />
       </Stack>
     </FormGroup>
   );

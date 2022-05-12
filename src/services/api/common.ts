@@ -1,6 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { setCloseVolumeAlerts, setProfitabilityAlerts } from 'components/Dashboard/redux';
-import { setMetrics } from 'components/UuidDashboard/redux';
+import {
+  setCloseVolumeAlert,
+  setProfitabilityAlert,
+} from 'components/UuidDashboard/redux';
 import { CONFIG } from 'core/config';
 
 import { AlertsRequest } from './types/requests';
@@ -8,10 +11,10 @@ import { InstrumentRequest } from './types/requests/instruments';
 import {
   CloseVolumeAlertResponse,
   CloseVolumeResponse,
-  MetricResponse,
-  MetricsResponse,
+  CloseVolumeResponseById,
   ProfitabilityAlertResponse,
   ProfitabilityResponse,
+  ProfitabilityResponseById,
 } from './types/responses';
 
 export const commonApi = createApi({
@@ -54,29 +57,29 @@ export const commonApi = createApi({
         }
       },
     }),
-    getProfitabilityById: build.query<MetricResponse, string>({
+    getProfitabilityById: build.query<ProfitabilityAlertResponse, string>({
       query: (id) => ({
         url: `/v1/sensors/profitability/alert/${id}`,
       }),
-      transformResponse: (res: MetricsResponse) => res.data,
+      transformResponse: (res: ProfitabilityResponseById) => res.data,
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const result = await queryFulfilled;
-          dispatch(setMetrics(result.data));
+          dispatch(setProfitabilityAlert(result.data));
         } catch (e) {
           console.error('fetchEntity error', e);
         }
       },
     }),
-    getCloseVolumeById: build.query<MetricResponse, string>({
+    getCloseVolumeById: build.query<CloseVolumeAlertResponse, string>({
       query: (id) => ({
         url: `/v1/sensors/close_volume/alert/${id}`,
       }),
-      transformResponse: (res: MetricsResponse) => res.data,
+      transformResponse: (res: CloseVolumeResponseById) => res.data,
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const result = await queryFulfilled;
-          dispatch(setMetrics(result.data));
+          dispatch(setCloseVolumeAlert(result.data));
         } catch (e) {
           console.error('fetchEntity error', e);
         }
