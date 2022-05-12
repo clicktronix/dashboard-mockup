@@ -3,16 +3,17 @@ import MuiTableBody from '@mui/material/TableBody';
 import MuiTableCell from '@mui/material/TableCell';
 import MuiTableHead from '@mui/material/TableHead';
 import MuiTableRow from '@mui/material/TableRow';
-import { CloseVolumeAlert, ProfitabilityAlert } from 'components/Dashboard/redux';
 
 type SensorTableProps = {
-  profitabilityAlerts?: ProfitabilityAlert[];
-  closeVolumeAlerts?: CloseVolumeAlert[];
+  profitabilityAlertsCount: number;
+  closeVolumeAlertsCount: number;
+  instrumentsCount: number;
 };
 
 export function SensorTable({
-  profitabilityAlerts,
-  closeVolumeAlerts,
+  profitabilityAlertsCount,
+  closeVolumeAlertsCount,
+  instrumentsCount,
 }: SensorTableProps) {
   return (
     <MuiTable size="small">
@@ -26,11 +27,15 @@ export function SensorTable({
         <>
           <MuiTableRow>
             <MuiTableCell>Profitability alerts</MuiTableCell>
-            <MuiTableCell>{profitabilityAlerts?.length}</MuiTableCell>
+            <MuiTableCell>{profitabilityAlertsCount}</MuiTableCell>
           </MuiTableRow>
           <MuiTableRow>
             <MuiTableCell>Close Volume alerts</MuiTableCell>
-            <MuiTableCell>{closeVolumeAlerts?.length}</MuiTableCell>
+            <MuiTableCell>{closeVolumeAlertsCount}</MuiTableCell>
+          </MuiTableRow>
+          <MuiTableRow>
+            <MuiTableCell>Instruments</MuiTableCell>
+            <MuiTableCell>{instrumentsCount}</MuiTableCell>
           </MuiTableRow>
         </>
       </MuiTableBody>

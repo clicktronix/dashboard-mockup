@@ -6,22 +6,21 @@ import {
   Divider,
   Stack,
   TextField,
-  Typography,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { CloseVolumeAlert } from 'components/Dashboard/redux';
 import { averageSelect } from 'components/Manipulator/redux';
 import * as R from 'ramda';
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { CloseVolumeAlertResponse } from 'services/api/types/responses';
 import { getColor } from 'utils/getColor';
 
 import { setInstrument } from './redux/actions';
 import { selectedInstrumentsSelect } from './redux/selectors';
 
 type InstrumentsHeatmapProps = {
-  alerts: CloseVolumeAlert[];
+  alertsMap: Record<string, CloseVolumeAlertResponse[]>;
 };
 
 type CustomizedChipProps = {
@@ -35,8 +34,7 @@ const CustomizedChip = styled(Chip, {
   margin: 6,
 }));
 
-export function InstrumentsHeatmap({ alerts }: InstrumentsHeatmapProps) {
-  const alertsMap = useMemo(() => R.groupBy(R.prop('symbol'), alerts), [alerts]);
+export function InstrumentsHeatmap({ alertsMap }: InstrumentsHeatmapProps) {
   const instruments = useMemo(() => Object.keys(alertsMap), [alertsMap]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -65,7 +63,7 @@ export function InstrumentsHeatmap({ alerts }: InstrumentsHeatmapProps) {
           multiple
           id="instruments"
           value={selectedInstruments}
-          sx={{ width: 500 }}
+          sx={{ width: 370 }}
           options={instruments}
           onChange={onChange}
           filterSelectedOptions
@@ -73,10 +71,6 @@ export function InstrumentsHeatmap({ alerts }: InstrumentsHeatmapProps) {
             <TextField {...params} label="Select instruments" placeholder="Instruments" />
           )}
         />
-        <Typography>{`Count of alerts: ${alerts.length}`}</Typography>
-        <Typography>{`Count of instruments: ${
-          Object.keys(alertsMap).length
-        }`}</Typography>
       </Stack>
       <Divider sx={{ my: 3 }} />
       {(selectedInstruments.length > 0 ? selectedInstruments : instruments)

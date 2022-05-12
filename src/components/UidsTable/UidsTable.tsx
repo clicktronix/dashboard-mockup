@@ -6,15 +6,15 @@ import MuiTableContainer from '@mui/material/TableContainer';
 import MuiTableHead from '@mui/material/TableHead';
 import MuiTablePagination from '@mui/material/TablePagination';
 import MuiTableRow, { TableRowProps as MuiTableRowProps } from '@mui/material/TableRow';
-import { ProfitabilityAlert } from 'components/Dashboard/redux';
 import { averageSelect } from 'components/Manipulator/redux';
 import { ChangeEvent, MouseEvent, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { ProfitabilityAlertResponse } from 'services/api/types/responses';
 import { getColor } from 'utils/getColor';
 
 type UidsTableProps = {
-  alerts?: ProfitabilityAlert[];
+  alerts?: ProfitabilityAlertResponse[];
 };
 
 type TableRowProps = {
@@ -62,7 +62,7 @@ export function UidsTable({ alerts = [] }: UidsTableProps) {
               >
                 <MuiTableCell>
                   <Link to={`/uuid/${alert.id}`} state={{ sensor: 'profitability' }}>
-                    {alert.userUUID}
+                    {alert.id}
                   </Link>
                 </MuiTableCell>
                 <MuiTableCell>{alert.tradesCount}</MuiTableCell>

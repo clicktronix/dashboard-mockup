@@ -12,6 +12,11 @@ import {
 } from './actions';
 import { Manipulator } from './types';
 
+export const initialDisabledSensors = {
+  profitability: false,
+  closeVolume: false,
+};
+
 const initialState: Manipulator = {
   sensors: {
     profitability: true,
@@ -29,7 +34,7 @@ const initialState: Manipulator = {
 export const manipulatorReducer = createReducer(initialState, (builder) =>
   builder
     .addCase(setSensor, (state, action) => {
-      state.sensors[action.payload] = !state.sensors[action.payload];
+      state.sensors = action.payload;
     })
     .addCase(setAverage, (state, action) => {
       state.average = action.payload;
