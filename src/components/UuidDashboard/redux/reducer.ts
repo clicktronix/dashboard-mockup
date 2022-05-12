@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { setMetrics } from './actions';
+import { setProfitabilityAlert } from './actions';
 import { Metrics } from './types';
 
 const initialState: Metrics = {
@@ -8,7 +8,7 @@ const initialState: Metrics = {
 };
 
 export const uuidDashboardReducer = createReducer(initialState, (builder) =>
-  builder.addCase(setMetrics, (state, action) => {
+  builder.addCase(setProfitabilityAlert, (state, action) => {
     state.metrics = action.payload;
   }),
 );

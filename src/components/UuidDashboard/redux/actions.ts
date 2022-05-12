@@ -1,7 +1,18 @@
 import { createAction } from '@reduxjs/toolkit';
+import {
+  CloseVolumeAlertResponse,
+  ProfitabilityAlertResponse,
+} from 'services/api/types/responses';
 
-import { Metric } from './types';
+const SET_PROFITABILITY_ALERT = 'UUID_DASHBOARD/SET_PROFITABILITY_ALERT';
+const SET_CLOSE_VOLUME = 'UUID_DASHBOARD/SET_CLOSE_VOLUME';
 
-const SET_METRICS = 'UUID_DASHBOARD/SET_METRICS';
+export const setProfitabilityAlert = createAction<
+  ProfitabilityAlertResponse,
+  typeof SET_PROFITABILITY_ALERT
+>(SET_PROFITABILITY_ALERT);
 
-export const setMetrics = createAction<Metric, typeof SET_METRICS>(SET_METRICS);
+export const setCloseVolumeAlert = createAction<
+  CloseVolumeAlertResponse,
+  typeof SET_CLOSE_VOLUME
+>(SET_CLOSE_VOLUME);
