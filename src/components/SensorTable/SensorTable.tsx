@@ -26,6 +26,12 @@ export function SensorTable({
       <MuiTableBody>
         <>
           <MuiTableRow>
+            <MuiTableCell>Total alerts</MuiTableCell>
+            <MuiTableCell>
+              {profitabilityAlertsCount + closeVolumeAlertsCount}
+            </MuiTableCell>
+          </MuiTableRow>
+          <MuiTableRow>
             <MuiTableCell>Profitability alerts</MuiTableCell>
             <MuiTableCell>{profitabilityAlertsCount}</MuiTableCell>
           </MuiTableRow>
