@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Alert, Grid } from '@mui/material';
 import { InstrumentsHeatmap } from 'components/InstrumentsHeatmap';
 import {
   datePeriodParamsSelect,
@@ -33,8 +33,14 @@ export const Dashboard = () => {
   ] = useLazyGetProfitabilityQuery();
 
   const [uuid, setUuid] = useState('');
-  const [fetchProfitabilityAlert, { isFetching: isProfitabilityAlertFetching, data }] =
-    useLazyGetProfitabilityByIdQuery();
+  const [
+    fetchProfitabilityAlert,
+    {
+      isFetching: isProfitabilityAlertFetching,
+      data: profitabilityAlertById,
+      error: profitabilityAlertError,
+    },
+  ] = useLazyGetProfitabilityByIdQuery();
   const alertsMap = useMemo(
     () => R.groupBy(R.prop('symbol'), closeVolumeAlerts),
     [closeVolumeAlerts],
@@ -45,7 +51,9 @@ export const Dashboard = () => {
   };
 
   const onSearchClick = () => {
-    fetchProfitabilityAlert(uuid);
+    if (uuid) {
+      fetchProfitabilityAlert(uuid);
+    }
   };
 
   useEffect(() => {
@@ -93,13 +101,23 @@ export const Dashboard = () => {
               <SearchBar
                 sx={{ width: 400 }}
                 value={uuid}
-                placeholder="Search by id"
+                placeholder="Search by UUID"
                 onChange={onSearchChange}
                 onClick={onSearchClick}
               />
             }
           >
-            <UidsTable alerts={data ? [data] : profitabilityAlerts} />
+            {uuid && profitabilityAlertError ? (
+              <Alert severity="error">Alert not found</Alert>
+            ) : (
+              <UidsTable
+                alerts={
+                  profitabilityAlertById && uuid
+                    ? [profitabilityAlertById]
+                    : profitabilityAlerts
+                }
+              />
+            )}
           </Tile>
         </Grid>
       )}

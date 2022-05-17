@@ -5,6 +5,7 @@ import MuiTableCell from '@mui/material/TableCell';
 import MuiTableHead from '@mui/material/TableHead';
 import MuiTableRow from '@mui/material/TableRow';
 import { Trade } from 'services/api/types/responses';
+import { d } from 'utils/dateTime';
 
 type InstrumentDetailsProps = {
   data?: Details;
@@ -48,6 +49,7 @@ export function InstrumentDetails({ data }: InstrumentDetailsProps) {
           <MuiTableCell>Trades count</MuiTableCell>
           <MuiTableCell>Lots value</MuiTableCell>
           <MuiTableCell>Comment</MuiTableCell>
+          <MuiTableCell>Time Emitted</MuiTableCell>
           <MuiTableCell>Description</MuiTableCell>
         </MuiTableRow>
       </MuiTableHead>
@@ -59,6 +61,7 @@ export function InstrumentDetails({ data }: InstrumentDetailsProps) {
           <MuiTableCell>{data.tradesCount}</MuiTableCell>
           <MuiTableCell>{data.sumLotsValue}</MuiTableCell>
           <MuiTableCell>{data.comment}</MuiTableCell>
+          <MuiTableCell>{d(data.timeEmitted).format('DD/MM/YYYY')}</MuiTableCell>
           <MuiTableCell>{data.description}</MuiTableCell>
         </MuiTableRow>
       </MuiTableBody>
