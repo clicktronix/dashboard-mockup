@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/dashboard-mockup/static/js/main.a3ec8f7a.js",
+    "main.js": "/dashboard-mockup/static/js/main.8ffe274f.js",
     "index.html": "/dashboard-mockup/index.html",
-    "main.a3ec8f7a.js.map": "/dashboard-mockup/static/js/main.a3ec8f7a.js.map"
+    "main.8ffe274f.js.map": "/dashboard-mockup/static/js/main.8ffe274f.js.map"
   },
   "entrypoints": [
-    "static/js/main.a3ec8f7a.js"
+    "static/js/main.8ffe274f.js"
   ]
 }
